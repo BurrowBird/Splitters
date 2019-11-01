@@ -2,10 +2,10 @@ state("ShadowFlare")
 {
     int redgoblin : 0x008CEB8, 0x0;
     int malse : 0x008CEB8, 0x4;
-    //int spiritstone : 0x008CEB8, 0x8;
+    int spiritstone : 0x008CEB8, 0x8;
     int dusty : 0x008CEB8, 0xC;
     int ruby : 0x008CEB8, 0x10;
-    //int gedo : 0x008CEB8, 0x14;
+    int gedo : 0x008CEB8, 0x14;
     int coldruins : 0x008CEB8, 0x18;
     int purgatory : 0x008CEB8, 0x1C;
     int reincarnation : 0x008CEB8, 0x20;
@@ -35,25 +35,29 @@ startup
     settings.Add("option3", true, "level 5");
     settings.Add("option4", false, "Malse's Gem");
     settings.Add("option5", true, "Dusty Ruins - entrance");
-    settings.Add("option6", true, "Dusty Ruins");
-    settings.Add("option7", true, "Rosanna's Ruby");
-    settings.Add("option8", true, "Cold Ruins");
-    settings.Add("option9", true, "Purgatory of Judgments");
-    settings.Add("option10", true, "Remains of Reincarnation");
-    settings.Add("option11", true, "Continuing Land");
-    settings.Add("option12", true, "Immortal Remains");
+    settings.Add("option6", false, "Syria's Spirit Stone");    
+    settings.Add("option7", true, "Dusty Ruins");
+    settings.Add("option8", true, "Rosanna's Ruby");
+    settings.Add("option9", true, "Cold Ruins");
+    settings.Add("option10", true, "Purgatory of Judgments");
+    settings.Add("option11", true, "Remains of Reincarnation");
+    settings.Add("option12", true, "Continuing Land");
+    settings.Add("option13", true, "Immortal Remains");
+    settings.Add("option14", false, "Errand for Edo");
     settings.SetToolTip("option1", "Splits upon completing the Red Goblin quest.");
     settings.SetToolTip("option2", "Splits at lvl 4.");
     settings.SetToolTip("option3", "Splits at lvl 5.");
     settings.SetToolTip("option4", "Splits upon completing the Malse's Gem quest.");
     settings.SetToolTip("option5", "Splits upon entering the Dusty Ruins.");
-    settings.SetToolTip("option6", "Splits upon completing the Dusty Ruins quest.");
-    settings.SetToolTip("option7", "Splits upon completing the Rosanna's ruby quest.");
-    settings.SetToolTip("option8", "Splits upon completing the Cold Ruins quest.");
-    settings.SetToolTip("option9", "Splits upon completing the Purgatory quest.");
-    settings.SetToolTip("option10", "Splits upon completing the Reincarnation Gem quest.");
-    settings.SetToolTip("option11", "Splits upon completing the Continuing land quest.");
-    settings.SetToolTip("option12", "Splits upon entering the episode 1 epilogue screen.");
+    settings.SetToolTip("option6", "Splits upon completing the Syria's Spirit Stone quest.");
+    settings.SetToolTip("option7", "Splits upon completing the Dusty Ruins quest.");
+    settings.SetToolTip("option8", "Splits upon completing the Rosanna's ruby quest.");
+    settings.SetToolTip("option9", "Splits upon completing the Cold Ruins quest.");
+    settings.SetToolTip("option10", "Splits upon completing the Purgatory quest.");
+    settings.SetToolTip("option11", "Splits upon completing the Reincarnation Gem quest.");
+    settings.SetToolTip("option12", "Splits upon completing the Continuing land quest.");
+    settings.SetToolTip("option13", "Splits upon entering the episode 1 epilogue screen.");
+    settings.SetToolTip("option14", "Splits upon completing the Errand for Gedo quest.");
 }
 
 start
@@ -117,8 +121,17 @@ split
         }
     }
 
-    //dusty ruins
+    //spirit stone
     if (settings["option6"])
+    {
+        if (current.dialog != old.dialog && current.dialog == "!! Is that the stolen Spirit S")
+        {
+            return true;
+        }
+    }
+
+    //dusty ruins
+    if (settings["option7"])
     {
         if (current.dialog != old.dialog && current.dialog == "Well done!  This town is final")
         {
@@ -127,7 +140,7 @@ split
     }
 
     //Rosanna's ruby
-    if (settings["option7"])
+    if (settings["option8"])
     {
         if (current.dialog != old.dialog && current.dialog == "That must be the memorable rub")
         {
@@ -136,7 +149,7 @@ split
     }
 
     //cold ruins
-    if (settings["option8"])
+    if (settings["option9"])
     {
         if (current.dialog != old.dialog && current.dialog == "You worked really hard.")
         {
@@ -145,7 +158,7 @@ split
     }
 
     //purgatory
-    if (settings["option9"])
+    if (settings["option10"])
     {
         if (current.dialog != old.dialog && current.dialog == "You made it!")
         {
@@ -154,7 +167,7 @@ split
     }
 
     //reincarnation
-    if (settings["option10"])
+    if (settings["option11"])
     {
         if (current.dialog != old.dialog && current.dialog == "Thank you for your efforts.")
         {
@@ -163,7 +176,7 @@ split
     }
 
     //continuing land
-    if (settings["option11"])
+    if (settings["option12"])
     {
         if (current.dialog != old.dialog && current.dialog == "Good job. Your report drew my ")
         {
@@ -181,11 +194,20 @@ split
     }*/
 
     //epilogue (paired with the immortal remains option)
-    if (settings["option12"])
+    if (settings["option13"])
     {
         if (current.dialog != old.dialog && current.dialog == "It seems that peace has been r")
         {
             vars.dustied = false;
+            return true;
+        }
+    }
+
+    //errand for Gedo
+    if (settings["option14"])
+    {
+        if (current.dialog != old.dialog && current.dialog == "Oh, you brought it back like y")
+        {
             return true;
         }
     }
