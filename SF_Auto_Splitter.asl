@@ -56,6 +56,7 @@ startup
 
     //episode 2
     settings.CurrentDefaultParent = "ep2";
+    settings.Add("lvl18", true, "level 18");
     settings.Add("lvl20", true, "level 20");
     settings.Add("thieves", true, "Thieves");
     settings.Add("gandalf", true, "You shall not pass!");
@@ -83,6 +84,7 @@ startup
     settings.SetToolTip("conland", "Splits upon completing the Continuing conland quest.");
     settings.SetToolTip("garmains", "Splits upon entering the episode 1 epilogue screen.");
     settings.SetToolTip("gedo", "Splits upon completing the Errand for Gedo quest.");
+    settings.SetToolTip("lvl20", "Splits at lvl 18."); 
     settings.SetToolTip("lvl20", "Splits at lvl 20.");    
     settings.SetToolTip("thieves", "Splits upon completing the 'Destroy Thieves staying SE of Kanfore' quest.");
     settings.SetToolTip("gandalf", "Splits upon being refused entrance to the elven city.");
@@ -240,6 +242,15 @@ split
 
     //---------------------------- EPISODE 2 ----------------------------
     
+    //SPECIAL (lvl) - lvl 18
+    if (settings["lvl18"])
+    {
+        if (current.lvl != old.lvl && current.lvl == 18)
+        {
+            return true;
+        }
+    }
+
     //SPECIAL (lvl) - lvl 20
     if (settings["lvl20"])
     {
