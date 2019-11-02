@@ -10,7 +10,7 @@ state("ShadowFlare")
     int purgatory : 0x008CEB8, 0x1C;
     int reincarnation : 0x008CEB8, 0x20;
     int continuing : 0x008CEB8, 0x24;
-    int gargoyles : 0x008CEB8, 0x28;
+    int garmains : 0x008CEB8, 0x28;
     
     string30 dialog : 0x008CE14, 0x30, 0x3C, 0x4, 0x0;
     int lvl : 0x005CA58, 0x14;
@@ -30,34 +30,65 @@ init
 
 startup
 {
-    settings.Add("option1", true, "Red Goblin");
-    settings.Add("option2", false, "level 4");
-    settings.Add("option3", true, "level 5");
-    settings.Add("option4", false, "Malse's Gem");
-    settings.Add("option5", true, "Dusty Ruins - entrance");
-    settings.Add("option6", false, "Syria's Spirit Stone");    
-    settings.Add("option7", true, "Dusty Ruins");
-    settings.Add("option8", true, "Rosanna's Ruby");
-    settings.Add("option9", true, "Cold Ruins");
-    settings.Add("option10", true, "Purgatory of Judgments");
-    settings.Add("option11", true, "Remains of Reincarnation");
-    settings.Add("option12", true, "Continuing Land");
-    settings.Add("option13", true, "Immortal Remains");
-    settings.Add("option14", false, "Errand for Edo");
-    settings.SetToolTip("option1", "Splits upon completing the Red Goblin quest.");
-    settings.SetToolTip("option2", "Splits at lvl 4.");
-    settings.SetToolTip("option3", "Splits at lvl 5.");
-    settings.SetToolTip("option4", "Splits upon completing the Malse's Gem quest.");
-    settings.SetToolTip("option5", "Splits upon entering the Dusty Ruins.");
-    settings.SetToolTip("option6", "Splits upon completing the Syria's Spirit Stone quest.");
-    settings.SetToolTip("option7", "Splits upon completing the Dusty Ruins quest.");
-    settings.SetToolTip("option8", "Splits upon completing the Rosanna's ruby quest.");
-    settings.SetToolTip("option9", "Splits upon completing the Cold Ruins quest.");
-    settings.SetToolTip("option10", "Splits upon completing the Purgatory quest.");
-    settings.SetToolTip("option11", "Splits upon completing the Reincarnation Gem quest.");
-    settings.SetToolTip("option12", "Splits upon completing the Continuing land quest.");
-    settings.SetToolTip("option13", "Splits upon entering the episode 1 epilogue screen.");
-    settings.SetToolTip("option14", "Splits upon completing the Errand for Gedo quest.");
+    //episode 1
+    settings.Add("ep1", true, "Episode 1 (Main Quests)");
+    settings.Add("ep1_side", false, "Episode 1 (Side Quests)");
+    settings.Add("ep2", false, "Episode 2 (Main Quests)");
+
+    //episode 1
+    settings.CurrentDefaultParent = "ep1";
+    settings.Add("red", true, "Red Goblin");
+    settings.Add("lvl5", true, "level 5");
+    settings.Add("dustance", true, "Dusty Ruins - entrance");  
+    settings.Add("dusty", true, "Dusty Ruins");
+    settings.Add("ruby", true, "Rosanna's Ruby");
+    settings.Add("cold", true, "Cold Ruins");
+    settings.Add("purgatory", true, "Purgatory of Judgments");
+    settings.Add("reincarnation", true, "Remains of Reincarnation");
+    settings.Add("conland", true, "Continuing Land");
+    settings.Add("garmains", true, "Immortal Remains");
+    
+    //episode 1 side
+    settings.CurrentDefaultParent = "ep1_side";
+    settings.Add("malse", true, "Malse's Gem");
+    settings.Add("syria", true, "Syria's Spirit Stone");
+    settings.Add("gedo", true, "Errand for Edo");
+
+    //episode 2
+    settings.CurrentDefaultParent = "ep2";
+    settings.Add("thieves", true, "Thieves");
+    settings.Add("gandalf", true, "You shall not pass!");
+    settings.Add("wizard", true, "Meet with the Wizard Kirushutat");
+    settings.Add("crystal", true, "Take back the Seal Crystal");
+    settings.Add("control", true, "Retake the security and control facility");
+    settings.Add("power", true, "Recapture the power supply facility");
+    settings.Add("dragons", true, "Defeat the Dragons!");
+    
+    //tooltips
+    settings.SetToolTip("ep1", "Selects episode 1 main quests.");
+    settings.SetToolTip("ep1_side", "Selects episode 1 side quests.");
+    settings.SetToolTip("ep2", "Selects episode 2 main quests.");
+    
+    settings.SetToolTip("red", "Splits upon completing the Red Goblin quest.");
+    settings.SetToolTip("lvl5", "Splits at lvl 5.");
+    settings.SetToolTip("malse", "Splits upon completing the Malse's Gem quest.");
+    settings.SetToolTip("dustance", "Splits upon entering the Dusty Ruins.");
+    settings.SetToolTip("syria", "Splits upon completing the Syria's Spirit Stone quest.");
+    settings.SetToolTip("dusty", "Splits upon completing the Dusty Ruins quest.");
+    settings.SetToolTip("ruby", "Splits upon completing the Rosanna's ruby quest.");
+    settings.SetToolTip("cold", "Splits upon completing the Cold Ruins quest.");
+    settings.SetToolTip("purgatory", "Splits upon completing the Purgatory quest.");
+    settings.SetToolTip("reincarnation", "Splits upon completing the Reincarnation Gem quest.");
+    settings.SetToolTip("conland", "Splits upon completing the Continuing conland quest.");
+    settings.SetToolTip("garmains", "Splits upon entering the episode 1 epilogue screen.");
+    settings.SetToolTip("gedo", "Splits upon completing the Errand for Gedo quest.");
+    settings.SetToolTip("thieves", "Splits upon completing the 'Destroy Thieves staying SE of Kanfore' quest.");
+    settings.SetToolTip("gandalf", "Splits upon being refused entrance to the elven city.");
+    settings.SetToolTip("wizard", "Splits upon completing the 'Meet with the Wizard Kirushutat' quest.");
+    settings.SetToolTip("crystal", "Splits upon completing the 'Take back the Seal Crystal' quest.");
+    settings.SetToolTip("control", "Splits upon completing the 'Retake the security and control facility' quest.");
+    settings.SetToolTip("power", "Splits upon completing the 'Recapture the power supply facility' quest.");
+    settings.SetToolTip("dragons", "Splits upon completing the 'Defeat the Dragons!' quest.");
 }
 
 start
@@ -72,7 +103,7 @@ start
 split
 {	
     //red goblin
-    if (settings["option1"])
+    if (settings["red"])
     {
         if (current.dialog != old.dialog && current.dialog == "I heard the news!")
         {
@@ -81,17 +112,8 @@ split
         }
     }
 
-    //SPECIAL (lvl) - lvl 4
-    if (settings["option2"])
-    {
-        if (current.lvl != old.lvl && current.lvl == 4)
-        {
-            return true;
-        }
-    }    
-
     //SPECIAL (lvl) - lvl 5
-    if (settings["option3"])
+    if (settings["lvl5"])
     {
         if (current.lvl != old.lvl && current.lvl == 5)
         {
@@ -100,7 +122,7 @@ split
     }
 
     //malse
-    if (settings["option4"])
+    if (settings["malse"])
     {
         if (current.dialog != old.dialog && current.dialog == "Oh, here you are. That must be")
         {
@@ -109,7 +131,7 @@ split
     }
 
     //SPECIAL (loc) - entering dusty ruins
-    if (settings["option5"])
+    if (settings["dustance"])
     {
         if (vars.dustied == false)
         {
@@ -122,7 +144,7 @@ split
     }
 
     //spirit stone
-    if (settings["option6"])
+    if (settings["syria"])
     {
         if (current.dialog != old.dialog && current.dialog == "!! Is that the stolen Spirit S")
         {
@@ -131,7 +153,7 @@ split
     }
 
     //dusty ruins
-    if (settings["option7"])
+    if (settings["dusty"])
     {
         if (current.dialog != old.dialog && current.dialog == "Well done!  This town is final")
         {
@@ -140,7 +162,7 @@ split
     }
 
     //Rosanna's ruby
-    if (settings["option8"])
+    if (settings["ruby"])
     {
         if (current.dialog != old.dialog && current.dialog == "That must be the memorable rub")
         {
@@ -149,7 +171,7 @@ split
     }
 
     //cold ruins
-    if (settings["option9"])
+    if (settings["cold"])
     {
         if (current.dialog != old.dialog && current.dialog == "You worked really hard.")
         {
@@ -158,7 +180,7 @@ split
     }
 
     //purgatory
-    if (settings["option10"])
+    if (settings["purgatory"])
     {
         if (current.dialog != old.dialog && current.dialog == "You made it!")
         {
@@ -167,7 +189,7 @@ split
     }
 
     //reincarnation
-    if (settings["option11"])
+    if (settings["reincarnation"])
     {
         if (current.dialog != old.dialog && current.dialog == "Thank you for your efforts.")
         {
@@ -176,7 +198,7 @@ split
     }
 
     //continuing land
-    if (settings["option12"])
+    if (settings["conland"])
     {
         if (current.dialog != old.dialog && current.dialog == "Good job. Your report drew my ")
         {
@@ -184,17 +206,19 @@ split
         }
     }
 
-    /*gargoyles (not used - epilogue is about 2 seconds apart anyway)
+    //garmains (not used since the epilogue is about 2 seconds apart anyway)
+    /*
     if (current.dialog != old.dialog)
     {
         if (current.dialog == "Great job!!")
         {
             return true;
         }
-    }*/
+    }
+    */
 
-    //epilogue (paired with the immortal remains option)
-    if (settings["option13"])
+    //epilogue (paired with the immortal garmains option)
+    if (settings["garmains"])
     {
         if (current.dialog != old.dialog && current.dialog == "It seems that peace has been r")
         {
@@ -204,9 +228,74 @@ split
     }
 
     //errand for Gedo
-    if (settings["option14"])
+    if (settings["gedo"])
     {
-        if (current.dialog != old.dialog && current.dialog == "Oh, you brought it back like y")
+        if (current.dialog != old.dialog && old.dialog == "Oh, you brought it back like y")
+        {
+            return true;
+        }
+    }
+
+    //---------------------------- EPISODE 2 ----------------------------
+    
+    //Destroy Thieves staying SE of Kanfore
+    if (settings["thieves"])
+    {
+        if (current.dialog != old.dialog && current.dialog == "First, here is a reward for yo")
+        {
+            return true;
+        }
+    }
+
+    //Head for the mining Tunnel of Yugunos
+    if (settings["gandalf"])
+    {
+        if (current.dialog != old.dialog && current.dialog == "Couldn't you pass through the ")
+        {
+            return true;
+        }
+    }
+
+    //Meet with the Wizard Kirushutat
+    if (settings["wizard"])
+    {
+        if (current.dialog != old.dialog && current.dialog == "Welcome, young man.")
+        {
+            return true;
+        }
+    }
+
+    //Take back the Seal Crystal
+    if (settings["crystal"])
+    {
+        if (current.dialog != old.dialog && current.dialog == "Thank you for bringing it back!")
+        {
+            return true;
+        }
+    }
+
+    //Retake the security and control facility
+    if (settings["control"])
+    {
+        if (current.dialog != old.dialog && current.dialog == "Looks like you've recaptured t")
+        {
+            return true;
+        }
+    }
+
+    //Recapture the power supply facility
+    if (settings["power"])
+    {
+        if (current.dialog != old.dialog && current.dialog == "Good job.  This is a reward for your efforts.")
+        {
+            return true;
+        }
+    }
+
+    //Defeat the Dragons! (=EPILOGUE)
+    if (settings["dragons"])
+    {
+        if (current.dialog != old.dialog && current.dialog == "I may be talking to a real hero.")
         {
             return true;
         }
