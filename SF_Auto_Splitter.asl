@@ -1,31 +1,16 @@
 state("ShadowFlare")
 {
-    int redgoblin : 0x008CEB8, 0x0;
-    int malse : 0x008CEB8, 0x4;
-    int spiritstone : 0x008CEB8, 0x8;
-    int dusty : 0x008CEB8, 0xC;
-    int ruby : 0x008CEB8, 0x10;
-    int gedo : 0x008CEB8, 0x14;
-    int coldruins : 0x008CEB8, 0x18;
-    int purgatory : 0x008CEB8, 0x1C;
-    int reincarnation : 0x008CEB8, 0x20;
-    int continuing : 0x008CEB8, 0x24;
-    int garmains : 0x008CEB8, 0x28;
-    
+    /*this string doesn't work anymore ugh
     string30 dialog : 0x008CE14, 0x30, 0x3C, 0x4, 0x0;
+    */
+    string50 dialog : 0x0080540, 0x0;
     int lvl : 0x005CA58, 0x14;
     string11 location : 0x00338FC, 0x0;
-    //int position : 0x00202EC, 0x4;
-    //int speech : 0x008CE14, 0x30, 0x3C, 0x4, 0x0;
-    //int experience : 0x008CE10, 0x34, 0x0, 0xE8;
-    
-    //"position" is one of the coordinates for player position - at the start of a new game, it's always 9030
-    //"location" is the string for the name of the area the player is in, inside map ("N")
 }
 
 init
 {
-    vars.dustied = false;
+
 }
 
 startup
@@ -37,7 +22,7 @@ startup
 
     //episode 1
     settings.CurrentDefaultParent = "ep1";
-    settings.Add("red", true, "Red Goblin");
+    settings.Add("reblin", true, "Red Goblin");
     settings.Add("lvl5", true, "level 5");
     settings.Add("dustance", true, "Dusty Ruins - entrance");  
     settings.Add("dusty", true, "Dusty Ruins");
@@ -71,7 +56,7 @@ startup
     settings.SetToolTip("ep1_side", "Selects episode 1 side quests.");
     settings.SetToolTip("ep2", "Selects episode 2 main quests.");
     
-    settings.SetToolTip("red", "Splits upon completing the Red Goblin quest.");
+    settings.SetToolTip("reblin", "Splits upon completing the Red Goblin quest.");
     settings.SetToolTip("lvl5", "Splits at lvl 5.");
     settings.SetToolTip("malse", "Splits upon completing the Malse's Gem quest.");
     settings.SetToolTip("dustance", "Splits upon entering the Dusty Ruins.");
@@ -107,134 +92,115 @@ start
 split
 {	
     //red goblin
-    if (settings["red"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "I heard the news!")
+        if (settings["reblin"] && current.dialog.Contains("I heard the news"))
         {
-            vars.dustied = false;
             return true;
         }
     }
 
     //SPECIAL (lvl) - lvl 5
-    if (settings["lvl5"])
+    if (settings["lvl5"] && current.lvl != old.lvl && current.lvl == 5)
     {
-        if (current.lvl != old.lvl && current.lvl == 5)
+        return true;
+    }
+
+    //malse
+    if (current.dialog != old.dialog)
+    {    
+        if (settings["malse"] && current.dialog.Contains("Oh, here you are. That must be"))
         {
             return true;
         }
     }
 
-    //malse
-    if (settings["malse"])
-    {
-        if (current.dialog != old.dialog && current.dialog == "Oh, here you are. That must be")
-        {
-                return true;
-        }
-    }
-
     //SPECIAL (loc) - entering dusty ruins
-    if (settings["dustance"])
+    if (settings["dustance"] && vars.dustied == false)
     {
-        if (vars.dustied == false)
+        if (current.location != old.location && current.location == "Dusty Ruins")
         {
-            if (current.location != old.location && current.location == "Dusty Ruins")
-            {
-                vars.dustied = true;
-                return true;
-            }
+            vars.dustied = true;
+            return true;
         }
     }
 
-    //spirit stone
-    if (settings["syria"])
-    {
-        if (current.dialog != old.dialog && current.dialog == "!! Is that the stolen Spirit S")
+    //syria
+    if (current.dialog != old.dialog)
+    {     
+        if (settings["syria"] && current.dialog.Contains("Is that the stolen Spirit"))
         {
             return true;
         }
     }
 
     //dusty ruins
-    if (settings["dusty"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "Well done!  This town is final")
+        if (settings["dusty"] && current.dialog.Contains("This town is finally"))
         {
             return true;
         }
     }
 
     //Rosanna's ruby
-    if (settings["ruby"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "That must be the memorable rub")
+        if (settings["ruby"] && current.dialog.Contains("That must be the memorable ruby"))
         {
             return true;
         }
     }
 
     //cold ruins
-    if (settings["cold"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "You worked really hard.")
+        if (settings["cold"] && current.dialog.Contains("You worked really hard."))
         {
             return true;
         }
     }
 
     //purgatory
-    if (settings["purgatory"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "You made it!")
+        if (settings["purgatory"] && current.dialog.Contains("You made it!"))
         {
             return true;
         }
     }
 
     //reincarnation
-    if (settings["reincarnation"])
-    {
-        if (current.dialog != old.dialog && current.dialog == "Thank you for your efforts.")
+    if (current.dialog != old.dialog)
+    {    
+        if (settings["reincarnation"] && current.dialog.Contains("Thank you for your efforts."))
         {
             return true;
         }
     }
 
     //continuing land
-    if (settings["conland"])
-    {
-        if (current.dialog != old.dialog && current.dialog == "Good job. Your report drew my ")
-        {
-            return true;
-        }
-    }
-
-    //garmains (not used since the epilogue is about 2 seconds apart anyway)
-    /*
     if (current.dialog != old.dialog)
     {
-        if (current.dialog == "Great job!!")
+        if (settings["conland"] && current.dialog.Contains("Good job. Your report drew"))
         {
             return true;
         }
     }
-    */
 
     //epilogue (paired with the immortal garmains option)
-    if (settings["garmains"])
-    {
-        if (current.dialog != old.dialog && current.dialog == "It seems that peace has been r")
+    if (current.dialog != old.dialog)
+    {    
+        if (settings["garmains"] && current.dialog.Contains("It seems that peace has been"))
         {
-            vars.dustied = false;
             return true;
         }
     }
 
     //errand for Gedo
-    if (settings["gedo"])
-    {
-        if (current.dialog != old.dialog && old.dialog == "Oh, you brought it back like y")
+    if (current.dialog != old.dialog)
+    {    
+        if (settings["gedo"] && current.dialog.Contains("Oh, you brought it back like"))
         {
             return true;
         }
@@ -243,81 +209,75 @@ split
     //---------------------------- EPISODE 2 ----------------------------
     
     //SPECIAL (lvl) - lvl 18
-    if (settings["lvl18"])
+    if (settings["lvl18"] && current.lvl != old.lvl && current.lvl == 18)
     {
-        if (current.lvl != old.lvl && current.lvl == 18)
-        {
-            return true;
-        }
+        return true;
     }
 
     //SPECIAL (lvl) - lvl 20
-    if (settings["lvl20"])
+    if (settings["lvl20"] && current.lvl != old.lvl && current.lvl == 20)
     {
-        if (current.lvl != old.lvl && current.lvl == 20)
-        {
-            return true;
-        }
+        return true;
     }
 
     //Destroy Thieves staying SE of Kanfore
-    if (settings["thieves"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "First, here is a reward for yo")
+        if (settings["thieves"] && current.dialog.Contains("First, here is a reward for"))
         {
             return true;
         }
     }
 
     //Head for the mining Tunnel of Yugunos
-    if (settings["gandalf"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "Couldn't you pass through the ")
+        if (settings["gandalf"] && current.dialog.Contains("Couldn't you pass through the"))
         {
             return true;
         }
     }
 
     //Meet with the Wizard Kirushutat
-    if (settings["wizard"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "Welcome, young man.")
+        if (settings["wizard"] && current.dialog.Contains("Welcome, young man."))
         {
             return true;
         }
     }
 
     //Take back the Seal Crystal
-    if (settings["crystal"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "Thank you for bringing it back!")
+        if (settings["crystal"] && current.dialog.Contains("Thank you for bringing it back!"))
         {
             return true;
         }
     }
 
     //Retake the security and control facility
-    if (settings["control"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "Looks like you've recaptured t")
+        if (settings["control"] && current.dialog.Contains("Looks like you've recaptured"))
         {
             return true;
         }
     }
 
     //Recapture the power supply facility
-    if (settings["power"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "Good job.  This is a reward for your efforts.")
+        if (settings["power"] && current.dialog.Contains("This is a reward for your efforts."))
         {
             return true;
         }
     }
 
     //Defeat the Dragons! (=EPILOGUE)
-    if (settings["dragons"])
+    if (current.dialog != old.dialog)
     {
-        if (current.dialog != old.dialog && current.dialog == "I may be talking to a real hero.")
+        if (settings["dragons"] && current.dialog.Contains("I may be talking to a real hero."))
         {
             return true;
         }
