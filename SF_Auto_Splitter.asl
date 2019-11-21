@@ -5,18 +5,14 @@ state("ShadowFlare")
     */
     string50 dialog : 0x0080540, 0x0;
     int lvl : 0x005CA58, 0x14;
-    string11 location : 0x00338FC, 0x0;
-}
-
-init
-{
-
+    string50 location : 0x00338FC, 0x0;
 }
 
 startup
 {
     //episode 1
     settings.Add("ep1", true, "Episode 1 (Main Quests)");
+    settings.Add("ep1_entrances", true, "Episode 1 (entrances)");
     settings.Add("ep1_side", false, "Episode 1 (Side Quests)");
     settings.Add("ep2", false, "Episode 2 (Main Quests)");
 
@@ -24,7 +20,6 @@ startup
     settings.CurrentDefaultParent = "ep1";
     settings.Add("reblin", true, "Red Goblin");
     settings.Add("lvl5", true, "level 5");
-    settings.Add("dustance", true, "Dusty Ruins - entrance");  
     settings.Add("dusty", true, "Dusty Ruins");
     settings.Add("ruby", true, "Rosanna's Ruby");
     settings.Add("cold", true, "Cold Ruins");
@@ -32,7 +27,15 @@ startup
     settings.Add("reincarnation", true, "Remains of Reincarnation");
     settings.Add("conland", true, "Continuing Land");
     settings.Add("garmains", true, "Immortal Remains");
-    
+
+    //episode 1 entrances
+    settings.CurrentDefaultParent = "ep1_entrances";
+    settings.Add("dusty_entry", true, "Dusty Ruins - entrance");
+    settings.Add("cold_entry", false, "Cold Ruins - entrance");
+    settings.Add("purgatory_entry", false, "Purgatory of Judgments - entrance");
+    settings.Add("reincarnation_entry", false, "Remains of Reincarnation - entrance");
+    settings.Add("immortal_entry", false, "Immortal Remains - entrance");
+
     //episode 1 side
     settings.CurrentDefaultParent = "ep1_side";
     settings.Add("malse", true, "Malse's Gem");
@@ -53,13 +56,19 @@ startup
     
     //tooltips
     settings.SetToolTip("ep1", "Selects episode 1 main quests.");
+    settings.SetToolTip("ep1_entrances", "Selects episode 1 entrances.");
     settings.SetToolTip("ep1_side", "Selects episode 1 side quests.");
     settings.SetToolTip("ep2", "Selects episode 2 main quests.");
     
+    settings.SetToolTip("dusty_entry", "Splits upon entering the Dusty Ruins.");
+    settings.SetToolTip("cold_entry", "Splits upon entering the Cold Ruins.");
+    settings.SetToolTip("purgatory_entry", "Splits upon entering the Purgatory of Judgments.");
+    settings.SetToolTip("reincarnation_entry", "Splits upon entering the Remains of Reincarnation.");
+    settings.SetToolTip("immortal_entry", "Splits upon entering the Immortal Remains.");
+
     settings.SetToolTip("reblin", "Splits upon completing the Red Goblin quest.");
     settings.SetToolTip("lvl5", "Splits at lvl 5.");
     settings.SetToolTip("malse", "Splits upon completing the Malse's Gem quest.");
-    settings.SetToolTip("dustance", "Splits upon entering the Dusty Ruins.");
     settings.SetToolTip("syria", "Splits upon completing the Syria's Spirit Stone quest.");
     settings.SetToolTip("dusty", "Splits upon completing the Dusty Ruins quest.");
     settings.SetToolTip("ruby", "Splits upon completing the Rosanna's ruby quest.");
@@ -80,17 +89,113 @@ startup
     settings.SetToolTip("dragons", "Splits upon completing the 'Defeat the Dragons!' quest.");
 }
 
+init
+{
+    refreshRate = 30;
+}
+
 start
 {
+    vars.dusty_visited = false;
+    vars.cold_visited = false;
+    vars.purgatory_visited = false;
+    vars.reincarnation_visited = false;
+    vars.immortal_visited = false;
+
     if (current.lvl != old.lvl && current.lvl == 1)
     {
-        vars.dustied = false;
         return true;
     }
 }
 
+/*for debugging
+update
+{
+    if (current.dialog != old.dialog)
+    {
+        print("old dialog: " + old.dialog);
+        print("current dialog: " + current.dialog);
+    }
+    
+    if (current.location != old.location)
+    {
+        print("old location: " + old.location);
+        print("current location: " + current.location);
+    }
+
+    if (vars.dusty_visited == true)
+    {
+        print("Dusty Ruins have been visited.");
+    }
+
+    if (vars.dusty_visited == false)
+    {
+        print("Dusty Ruins have yet NOT been visited.");
+    }
+}*/
+
 split
 {	
+    //LVL - lvl 5
+    if (settings["lvl5"] && current.lvl != old.lvl && current.lvl == 5)
+    {
+        return true;
+    }
+
+    /*Location Splits (=entrances)
+    ---------------------------------------------------------*/
+    //LOCATION - entering dusty ruins
+    if (current.location != old.location)
+    {
+        if (settings["dusty_entry"] && current.location.Contains("Dusty Ruins") && vars.dusty_visited == false)
+        {
+            vars.dusty_visited = true;
+            return true;
+        }
+    }
+
+    //LOCATION - entering cold ruins
+    if (current.location != old.location)
+    {
+        if (settings["cold_entry"] && current.location.Contains("Cold Ruins") && vars.cold_visited == false)
+        {
+            vars.cold_visited = true;
+            return true;
+        }
+    }
+
+    //LOCATION - entering purgatory of judgments
+    if (current.location != old.location)
+    {
+        if (settings["purgatory_entry"] && current.location.Contains("Purgatory") && vars.purgatory_visited == false)
+        {
+            vars.purgatory_visited = true;
+            return true;
+        }
+    }
+
+    //LOCATION - entering remains of reincarnation
+    if (current.location != old.location)
+    {
+        if (settings["reincarnation_entry"] && current.location.Contains("Reincarnation") && vars.reincarnation_visited == false)
+        {
+            vars.reincarnation_visited = true;
+            return true;
+        }
+    }
+
+    //LOCATION - entering immortal remains
+    if (current.location != old.location)
+    {
+        if (settings["immortal_entry"] && current.location.Contains("Immortal Remains") && vars.immortal_visited == false)
+        {
+            vars.immortal_visited = true;
+            return true;
+        }
+    }
+
+    /*Quest Splits
+    ---------------------------------------------------------*/
     //red goblin
     if (current.dialog != old.dialog)
     {
@@ -100,27 +205,11 @@ split
         }
     }
 
-    //SPECIAL (lvl) - lvl 5
-    if (settings["lvl5"] && current.lvl != old.lvl && current.lvl == 5)
-    {
-        return true;
-    }
-
     //malse
     if (current.dialog != old.dialog)
     {    
         if (settings["malse"] && current.dialog.Contains("Oh, here you are. That must be"))
         {
-            return true;
-        }
-    }
-
-    //SPECIAL (loc) - entering dusty ruins
-    if (settings["dustance"] && vars.dustied == false)
-    {
-        if (current.location != old.location && current.location == "Dusty Ruins")
-        {
-            vars.dustied = true;
             return true;
         }
     }
