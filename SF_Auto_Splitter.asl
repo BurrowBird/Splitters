@@ -6,10 +6,14 @@ state("ShadowFlare")
     string50 dialog : 0x0080540, 0x0;
     int lvl : 0x005CA58, 0x14;
     string50 location : 0x00338FC, 0x0;
+    int loading : 0x0008CE10, 0x1C, 0x54, 0x0, 0x43C;
 }
 
 startup
 {
+    //state
+    settings.Add("gametime", false, "Loading Removal");
+
     //episode 1
     settings.Add("ep1", true, "Episode 1 (Main Quests)");
     settings.Add("ep1_entrances", true, "Episode 1 (entrances)");
@@ -55,6 +59,7 @@ startup
     settings.Add("dragons", true, "Defeat the Dragons!");
     
     //tooltips
+    settings.SetToolTip("gametime", "Pauses timer while loading, as long as you also change the Timer Method to Game Time in Layout Settings.");
     settings.SetToolTip("ep1", "Selects episode 1 main quests.");
     settings.SetToolTip("ep1_entrances", "Selects episode 1 entrances.");
     settings.SetToolTip("ep1_side", "Selects episode 1 side quests.");
@@ -92,6 +97,11 @@ startup
 init
 {
     refreshRate = 30;
+}
+
+onStart
+{
+	timer.IsGameTimePaused = false;
 }
 
 start
@@ -132,6 +142,9 @@ update
     {
         print("Dusty Ruins have yet NOT been visited.");
     }
+
+    // if(current.loading != old.loading) vars.Log("Loading: " + current.loading.ToString());
+	// if(current.loading != old.loading) vars.Log("End Split: " + current.endSplit.ToString());
 }*/
 
 split
@@ -380,5 +393,12 @@ reset
 
 isLoading
 {
-
+    if (current.loading == 1 && settings["gametime"])
+        {
+            return true;
+        }
+    else if (old.loading == 1 && current.loading == 0)
+        {
+            return false;
+        }
 }
