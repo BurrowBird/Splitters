@@ -12,7 +12,7 @@ state("ShadowFlare")
 startup
 {
     //state
-    settings.Add("gametime", false, "Loading Removal");
+    settings.Add("gametime", true, "Enable Loading Removal");
 
     //episode 1
     settings.Add("ep1", true, "Episode 1 (Main Quests)");
@@ -59,7 +59,7 @@ startup
     settings.Add("dragons", true, "Defeat the Dragons!");
     
     //tooltips
-    settings.SetToolTip("gametime", "Pauses timer while loading, as long as you also change the Timer Method to Game Time in Layout Settings.");
+    settings.SetToolTip("gametime", "Allows switching to IGT.");
     settings.SetToolTip("ep1", "Selects episode 1 main quests.");
     settings.SetToolTip("ep1_entrances", "Selects episode 1 entrances.");
     settings.SetToolTip("ep1_side", "Selects episode 1 side quests.");
